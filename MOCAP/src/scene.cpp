@@ -6,7 +6,7 @@ Scene::Scene()
 
     string input_xml;
     string line;
-    ifstream config("..\\CONFIG\\config.xml");
+    ifstream config("config/config.xml");
 
     // read file into input_xml
     while ( getline(config,line) )
@@ -46,7 +46,8 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
     vector<BodyPart*> *thisBody = static_cast<vector<BodyPart*>* >(param);
     int bodySize = thisBody->size();
 
-    HANDLE *hThread = new HANDLE [bodySize]; // bodySize handles were allocated but only card(boxesOnline) will be used
+//    HANDLE *hThread = new HANDLE [bodySize];
+		std::thread *hThread = new std::thread [bodySize];
 
     fstream *calibrationFile = new fstream [bodySize];
 
@@ -80,11 +81,11 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
         {
             char filename[50];
             char id[4];
-            _itoa_s(int(thisBody->at(j)->devID()), id, 10);
+            sprintf ( id, "%d", int(thisBody->at(j)->devID()) );
             string line;
 
-            strcpy_s(filename, "..\\CALIB\\"); 
- 	    	strcat_s(filename, id); strcat_s(filename, "AccCalib"); strcat_s(filename, ".txt");
+            strcpy(filename, "calib/"); 
+ 	    			strcat(filename, id); strcat(filename, "AccCalib"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
             {
@@ -101,7 +102,7 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                 system ( "pause" );
                 exit ( EXIT_FAILURE );
             }
-            strcpy_s(filename, "..\\CALIB\\"); strcat_s(filename, id); strcat_s(filename, "AccVar"); strcat_s(filename, ".txt");
+            strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "AccVar"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
             {
@@ -118,7 +119,7 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                 system ( "pause" );
                 exit ( EXIT_FAILURE );
             }
-            strcpy_s(filename, "..\\CALIB\\"); strcat_s(filename, id); strcat_s(filename, "GyroCalib"); strcat_s(filename, ".txt");
+            strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "GyroCalib"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
             {
@@ -135,7 +136,7 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                 system ( "pause" );
                 exit ( EXIT_FAILURE );
             }
-            strcpy_s(filename, "..\\CALIB\\"); strcat_s(filename, id); strcat_s(filename, "GyroVar"); strcat_s(filename, ".txt");
+            strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "GyroVar"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
             {
@@ -152,7 +153,7 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                 system ( "pause" );
                 exit ( EXIT_FAILURE );
             }
-            strcpy_s(filename, "..\\CALIB\\"); strcat_s(filename, id); strcat_s(filename, "MagCalib"); strcat_s(filename, ".txt");
+            strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "MagCalib"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
             {
@@ -169,7 +170,7 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                 system ( "pause" );
                 exit ( EXIT_FAILURE );
             }
-            strcpy_s(filename, "..\\CALIB\\"); strcat_s(filename, id); strcat_s(filename, "MagVar"); strcat_s(filename, ".txt");
+            strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "MagVar"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
             {
@@ -219,8 +220,9 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             {                                
                 for (int i=0; i < cInst->GH_NSAMPLES; i++) // mag field
                 {
-                    imuData.block<3,3>(0,3*j) = (thisBody->at(j)->devID()>Common::LARGESTBOXID) ?
-                        (thisBody->at(j)->DeviceSPh::readIMU()):(thisBody->at(j)->DeviceBox::readIMU(MAGNETIC_FIELD));
+//                  imuData.block<3,3>(0,3*j) = (thisBody->at(j)->devID()>Common::LARGESTBOXID) ?
+//                      (thisBody->at(j)->DeviceSPh::readIMU()):(thisBody->at(j)->DeviceBox::readIMU(MAGNETIC_FIELD));
+										imuData.block<3,3>(0,3*j) = thisBody->at(j)->DeviceSPh::readIMU();
                     magfield.col(j) += mK * (imuData.col(MAGNETIC_FIELD + 3*j) - mb);
                 }
                 magfield.col(j) = thisBody->at(j)->ABC2XYZ()*magfield.col(j)/cInst->GH_NSAMPLES;
@@ -230,8 +232,9 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             {                                
                 for (int i=0; i < cInst->GH_NSAMPLES; i++) // mag field
                 {
-                    imuData.block<3,3>(0,3*j) = (thisBody->at(j)->devID()>Common::LARGESTBOXID) ?
-                        (thisBody->at(j)->DeviceSPh::readIMU()):(thisBody->at(j)->DeviceBox::readIMU(ACCELERATION));
+//                    imuData.block<3,3>(0,3*j) = (thisBody->at(j)->devID()>Common::LARGESTBOXID) ?
+//                        (thisBody->at(j)->DeviceSPh::readIMU()):(thisBody->at(j)->DeviceBox::readIMU(ACCELERATION));
+										imuData.block<3,3>(0,3*j) = (thisBody->at(j)->DeviceSPh::readIMU());
                     gravity.col(j) += -1* gK * (imuData.col(ACCELERATION + 3*j) - gb);
                 }
                 gravity.col(j) = thisBody->at(j)->ABC2XYZ()*gravity.col(j)/cInst->GH_NSAMPLES;
@@ -264,11 +267,16 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
         if ( thisBody->at(i)->is_online() )
         {
             hThread[nDevicesOnline] = (thisBody->at(i)->KFType() == UKF) ?
-                (HANDLE)_beginthread( BodyPart::updateUKF, 0, (void *) thisBody->at(i) ) : (HANDLE)_beginthread( BodyPart::updateEKF, 0, (void *) thisBody->at(i) );
+              std::thread ( BodyPart::updateUKF, (void *) thisBody->at(i) ) :
+							std::thread ( BodyPart::updateEKF, (void *) thisBody->at(i) );
             ++nDevicesOnline;
         }
     }
-    WaitForMultipleObjects( nDevicesOnline, hThread, true, INFINITE );
+
+		for ( i=0; i < nDevicesOnline; i++ )
+		{
+			hThread[i].join();
+		}
     std::clog << "All body parts are offline now\n";
 }
 
@@ -554,140 +562,140 @@ void Scene::initFromXML( vector<char> &xml_copy )
 
                         if ( lv3node->name() == string("Thorax") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 thorax = new Thoraxabdo ( deviceID, KFType, UKFW, LPF, refPos, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                thorax = new Thoraxabdo ( iAdp, deviceID, KFType, UKFW, LPF, refPos, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                thorax = new Thoraxabdo ( iAdp, deviceID, KFType, UKFW, LPF, refPos, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !thorax->is_online() )
                                 thorax->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(thorax);
                         }
                         else if ( lv3node->name() == string("Head") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) ){
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 head = new Head ( deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            }else
-                                head = new Head ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//														else
+//                                head = new Head ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !head->is_online() )
                                 head->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(head);
                         }
                         else if ( lv3node->name() == string("UpperRightArm") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 urarm = new Upperarm ( deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, RIGHT );
-                            else
-                                urarm = new Upperarm ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, RIGHT );
+//                            else
+//                                urarm = new Upperarm ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, RIGHT );
                             if ( !urarm->is_online() )
                                 urarm->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(urarm);
                         }
                         else if ( lv3node->name() == string("LowerRightArm") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 lrarm = new Lowerarm ( deviceID, KFType, UKFW, LPF, urarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                lrarm = new Lowerarm ( iAdp, deviceID, KFType, UKFW, LPF, urarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                lrarm = new Lowerarm ( iAdp, deviceID, KFType, UKFW, LPF, urarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !lrarm->is_online() )
                                 lrarm->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(lrarm);
                         }
                         else if ( lv3node->name() == string("RightHand") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 rhand = new Hand ( deviceID, KFType, UKFW, LPF, lrarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                rhand = new Hand ( iAdp, deviceID, KFType, UKFW, LPF, lrarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                rhand = new Hand ( iAdp, deviceID, KFType, UKFW, LPF, lrarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !rhand->is_online() )
                                 rhand->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(rhand);
                         }
                         else if ( lv3node->name() == string("UpperLeftArm") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 ularm = new Upperarm ( deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, LEFT );
-                            else
-                                ularm = new Upperarm ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, LEFT );
+//                            else
+//                                ularm = new Upperarm ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, LEFT );
                             if ( !ularm->is_online() )
                                 ularm->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(ularm);
                         }
                         else if ( lv3node->name() == string("LowerLeftArm") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 llarm = new Lowerarm ( deviceID, KFType, UKFW, LPF, ularm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                llarm = new Lowerarm ( iAdp, deviceID, KFType, UKFW, LPF, ularm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                llarm = new Lowerarm ( iAdp, deviceID, KFType, UKFW, LPF, ularm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !llarm->is_online() )
                                 llarm->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(llarm);
                         }
                         else if ( lv3node->name() == string("LeftHand") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 lhand = new Hand ( deviceID, KFType, UKFW, LPF, llarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                lhand = new Hand ( iAdp, deviceID, KFType, UKFW, LPF, llarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                lhand = new Hand ( iAdp, deviceID, KFType, UKFW, LPF, llarm, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !lhand->is_online() )
                                 lhand->RGBAcolor() = this->RGBA_OFF;
                             body->push_back(lhand);
                         }
                         else if ( lv3node->name() == string("UpperLeftLeg") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 ulleg = new Upperleg ( deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, LEFT );
-                            else
-                                ulleg = new Upperleg ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, LEFT );
+//                            else
+//                                ulleg = new Upperleg ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, LEFT );
                             if ( !ulleg->is_online() )
                                 ulleg->RGBAcolor() = RGBA_OFF;
                             body->push_back(ulleg);
                         }
                         else if ( lv3node->name() == string("LowerLeftLeg") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 llleg = new Lowerleg ( deviceID, KFType, UKFW, LPF, ulleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                llleg = new Lowerleg ( iAdp, deviceID, KFType, UKFW, LPF, ulleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                llleg = new Lowerleg ( iAdp, deviceID, KFType, UKFW, LPF, ulleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !llleg->is_online() )
                                 llleg->RGBAcolor() = RGBA_OFF;
                             body->push_back(llleg);
                         }
                         else if ( lv3node->name() == string("LeftFoot") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 lfoot = new Foot ( deviceID, KFType, UKFW, LPF, llleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                lfoot = new Foot ( iAdp, deviceID, KFType, UKFW, LPF, llleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                lfoot = new Foot ( iAdp, deviceID, KFType, UKFW, LPF, llleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !lfoot->is_online() )
                                 lfoot->RGBAcolor() = RGBA_OFF;
                             body->push_back(lfoot);
                         }
                         else if ( lv3node->name() == string("UpperRightLeg") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 urleg = new Upperleg ( deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, RIGHT );
-                            else
-                                urleg = new Upperleg ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, RIGHT );
+//                            else
+//                                urleg = new Upperleg ( iAdp, deviceID, KFType, UKFW, LPF, thorax, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc, RIGHT );
                             if ( !urleg->is_online() )
                                 urleg->RGBAcolor() = RGBA_OFF;
                             body->push_back(urleg);
                         }
                         else if ( lv3node->name() == string("LowerRightLeg") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 lrleg = new Lowerleg ( deviceID, KFType, UKFW, LPF, urleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                lrleg = new Lowerleg ( iAdp, deviceID, KFType, UKFW, LPF, urleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                lrleg = new Lowerleg ( iAdp, deviceID, KFType, UKFW, LPF, urleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !lrleg->is_online() )
                                 lrleg->RGBAcolor() = RGBA_OFF;
                             body->push_back(lrleg);
                         }
                         else if ( lv3node->name() == string("RightFoot") )
                         {
-                            if ( deviceID > int(Common::LARGESTBOXID) )
+//                            if ( deviceID > int(Common::LARGESTBOXID) )
                                 rfoot = new Foot ( deviceID, KFType, UKFW, LPF, lrleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
-                            else
-                                rfoot = new Foot ( iAdp, deviceID, KFType, UKFW, LPF, lrleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
+//                            else
+//                                rfoot = new Foot ( iAdp, deviceID, KFType, UKFW, LPF, lrleg, Aori, Cori, Lori, Oori, color, rSize, HHeight, ecc );
                             if ( !rfoot->is_online() )
                                 rfoot->RGBAcolor() = RGBA_OFF;
                             body->push_back(rfoot);
@@ -872,16 +880,16 @@ void Scene::keyboardAction( unsigned char key, int i, int j )
     case 27:        //ESCAPE fullscreen
         if ( cInst->isFullScreenON )
         {
-            NONCLIENTMETRICS metrics;
-            metrics.cbSize = sizeof(metrics);
-            RECT rect;
-            SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &metrics, 0);
-            SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+//            NONCLIENTMETRICS metrics;
+//            metrics.cbSize = sizeof(metrics);
+//            RECT rect;
+//            SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &metrics, 0);
+//            SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
 
-            glutPositionWindow( rect.right/2 + GetSystemMetrics(SM_CYFRAME),
-                metrics.iMenuHeight + GetSystemMetrics(SM_CXFRAME)); 
-            glutReshapeWindow( rect.right/2 - 2*GetSystemMetrics(SM_CYFRAME),
-                rect.bottom - 2*GetSystemMetrics(SM_CXFRAME) - metrics.iMenuHeight);
+//            glutPositionWindow( rect.right/2 + GetSystemMetrics(SM_CYFRAME),
+//                metrics.iMenuHeight + GetSystemMetrics(SM_CXFRAME)); 
+//            glutReshapeWindow( rect.right/2 - 2*GetSystemMetrics(SM_CYFRAME),
+//                rect.bottom - 2*GetSystemMetrics(SM_CXFRAME) - metrics.iMenuHeight);
 
             cInst->isFullScreenON = false;
         }
@@ -889,16 +897,16 @@ void Scene::keyboardAction( unsigned char key, int i, int j )
     case 'f':        //toggle fullscreen
         if ( cInst->isFullScreenON )
         {
-            NONCLIENTMETRICS metrics;
-            metrics.cbSize = sizeof(metrics);
-            RECT rect;
-            SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &metrics, 0);
-            SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+//            NONCLIENTMETRICS metrics;
+//            metrics.cbSize = sizeof(metrics);
+//            RECT rect;
+//            SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &metrics, 0);
+//            SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
 
-            glutPositionWindow( rect.right/2 + GetSystemMetrics(SM_CYFRAME),
-                metrics.iMenuHeight + GetSystemMetrics(SM_CXFRAME)); 
-            glutReshapeWindow( rect.right/2 - 2*GetSystemMetrics(SM_CYFRAME),
-                rect.bottom - 2*GetSystemMetrics(SM_CXFRAME) - metrics.iMenuHeight);
+//            glutPositionWindow( rect.right/2 + GetSystemMetrics(SM_CYFRAME),
+//                metrics.iMenuHeight + GetSystemMetrics(SM_CXFRAME)); 
+//            glutReshapeWindow( rect.right/2 - 2*GetSystemMetrics(SM_CYFRAME),
+//                rect.bottom - 2*GetSystemMetrics(SM_CXFRAME) - metrics.iMenuHeight);
             
             cInst->isFullScreenON = false;
         }

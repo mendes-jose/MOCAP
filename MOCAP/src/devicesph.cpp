@@ -11,7 +11,7 @@ DeviceSPh::DeviceSPh ( const int &sphoneID ):
     // Create a TCP socket
     server_socket = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP); // Create socket
 
-    if (server_socket == INVALID_SOCKET)
+    if (server_socket == 0)
     {
         std::cerr << "WARNING: fail to create a TCP socket for device " << int(sphoneID) << std::endl;
         status = false;
@@ -22,14 +22,14 @@ DeviceSPh::DeviceSPh ( const int &sphoneID ):
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(Common::TCPSERVERBASEPORT+sphoneID);
 
-    if ( ::bind(server_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR )
+    if ( ::bind(server_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == 0 )
     {
         std::cerr << "WARNING: fail to bind to the device "<< int(sphoneID) << " socket" << std::endl;
         status = false;
         return;
     }
             
-    if ( listen(server_socket, 14) == SOCKET_ERROR )
+    if ( listen(server_socket, 14) == 0 )
     {
         std::cerr << "WARNING: fail to start listen to device " << int(sphoneID) << " connection request" << std::endl;
         status = false;
@@ -39,7 +39,7 @@ DeviceSPh::DeviceSPh ( const int &sphoneID ):
     std::clog <<"Waiting for connection request from device " << int(this->deviceID) << std::endl;
 
     clientLen = sizeof(clientAddr);
-    if ( (client_socket = mAccept(server_socket, (struct sockaddr *)&clientAddr, &clientLen, Common::TCPSERVERLISTENINGTIMEOUT/1000)) == INVALID_SOCKET )
+    if ( (client_socket = mAccept(server_socket, (struct sockaddr *)&clientAddr, &clientLen, Common::TCPSERVERLISTENINGTIMEOUT/1000)) == 0 )
     {
         std::cerr << "WARNING: fail to accept connection from device " << int(sphoneID) << " or listening timeout" << std::endl;
         status = false;
@@ -47,18 +47,18 @@ DeviceSPh::DeviceSPh ( const int &sphoneID ):
     }
     
     std::clog <<"Connection with device " << int(this->deviceID) << " accepted" << std::endl;
-    closesocket(server_socket);
+    close(server_socket);
 
     status = true;
 }
 
 Eigen::Matrix3d& DeviceSPh::readIMU ()
 {
-    _itoa_s(ALL_THREE, sensorTypeAsCString, 10);
-    sensorTypeAsCString[1] = '\n';
+    sprintf(sensorTypeAsCString, "%d", ALL_THREE);
+//    sensorTypeAsCString[1] = '\n';
 
     // SENDING DATA REQUEST
-    if ( sendto ( client_socket, sensorTypeAsCString, sizeof(sensorTypeAsCString), 0, (struct sockaddr *)&clientAddr, sizeof(clientLen) ) == SOCKET_ERROR )
+    if ( sendto ( client_socket, sensorTypeAsCString, sizeof(sensorTypeAsCString), 0, (struct sockaddr *)&clientAddr, sizeof(clientLen) ) == 0 )
     {
         std::cerr << "WARNING: fail to send data request to device " << deviceID << std::endl;
         status = false;
@@ -66,11 +66,12 @@ Eigen::Matrix3d& DeviceSPh::readIMU ()
     }
 
     // RECIEVING DATA
-    System::Threading::Thread::Sleep ( Common::RECVSMARTPHONEDATAWAITINGTIME ); // wait a while before trying to get the requested data
+		// wait a while before trying to get the requested data
+    nanosleep ( (struct timespec[]){{0, Common::RECVSMARTPHONEDATAWAITINGTIME*1000000}}, NULL);
     ret = recvfrom ( client_socket, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &clientLen );
     for ( int counter=0; ret < 1 && counter*Common::RECVSMARTPHONEDATAWAITINGTIME < Common::RECVSMARTPHONEDATATIMEOUT; counter++ )
     {
-        System::Threading::Thread::Sleep ( Common::RECVSMARTPHONEDATAWAITINGTIME ); // wait a while before trying to get the requested data
+        nanosleep ( (struct timespec[]){{0, Common::RECVSMARTPHONEDATAWAITINGTIME*1000000}}, NULL);
         ret = recvfrom ( client_socket, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &clientLen );
     }
 
@@ -103,7 +104,7 @@ Eigen::Matrix3d& DeviceSPh::readIMU ()
     return imuData;
 }
 
-SOCKET DeviceSPh::mAccept (SOCKET s, struct sockaddr *addr, int *addrlen, int timeout)
+int DeviceSPh::mAccept (int s, struct sockaddr *addr, unsigned int *addrlen, int timeout)
 {
     int iResult;
     struct timeval tv;
@@ -119,11 +120,7 @@ SOCKET DeviceSPh::mAccept (SOCKET s, struct sockaddr *addr, int *addrlen, int ti
     {
         return accept(s, addr, addrlen);
     }
-    else
-    {
-        //always here, even if i connect from another application
-    }
-    return INVALID_SOCKET;
+    return 0;
 }
 
 
@@ -132,13 +129,14 @@ DeviceSPh::~DeviceSPh () {}
 void DeviceSPh::init ()
 {
     // Init Winsock.
-    WSADATA wsaData;
-    int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+//    WSADATA wsaData;
+//    int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 
-    if (iResult != NO_ERROR)
+//    if (iResult != NO_ERROR)
+		if (0)
     {
         std::cerr << "ERROR: DeviceSPh::init() failure" << std::endl;
-        system ( "pause" );
+//        system ( "pause" );
         exit ( EXIT_FAILURE );
     }
     else
@@ -147,5 +145,5 @@ void DeviceSPh::init ()
 
 void DeviceSPh::closeAll ()
 {
-    WSACleanup ();
+//    WSACleanup ();
 }

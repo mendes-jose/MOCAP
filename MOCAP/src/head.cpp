@@ -1,15 +1,15 @@
 #include "head.h"
 
-Head::Head ( const unsigned char &iAdapter, const int &DeviceID,
-    const bool KFType, const float &KFW,
-    const int &LPF,
-    BodyPart *thorax,
-    const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
-    const Vector4f &color,
-    const Vector3d &rSize, const float &HHeight, const Vector3d &ecc):
-BodyPart ( iAdapter, DeviceID, KFType, KFW, LPF, thorax->pos() + thorax->getDim(2)*thorax->O(),
-    Aori, Cori, Lori, Oori, color, rSize*HHeight ),
-    thorax(thorax), ecc(ecc) {}
+//Head::Head ( const unsigned char &iAdapter, const int &DeviceID,
+//    const bool KFType, const float &KFW,
+//    const int &LPF,
+//    BodyPart *thorax,
+//    const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
+//    const Vector4f &color,
+//    const Vector3d &rSize, const float &HHeight, const Vector3d &ecc):
+//BodyPart ( iAdapter, DeviceID, KFType, KFW, LPF, thorax->pos() + thorax->getDim(2)*thorax->O(),
+//    Aori, Cori, Lori, Oori, color, rSize*HHeight ),
+//    thorax(thorax), ecc(ecc) {}
 
 Head::Head ( const int &DeviceID,
     const bool KFType, const float &KFW,

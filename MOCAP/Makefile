@@ -19,17 +19,17 @@ CPP_SRCS =  src/bodypart.cpp\
 		src/upperleg.cpp
 
 # Define header file paths
-INCPATH = -Ihdr/ -I/usr/include/GL/
+INCPATH = -I./ -Ihdr/ -I/usr/include/GL/
 
 # Define the -L library path(s)
 LDFLAGS =
 
 # Define the -l library name(s)
-LIBS =
+LIBS = -lGL -lglut -lGLU
 
 # Only in special cases should anything be edited below this line
 OBJS      = $(CPP_SRCS:.cpp=.o)
-CXXFLAGS  = -c -Wall -ansi -pedantic
+CXXFLAGS  = -c -Wall -ansi -std=c++0x
 DEP_FILE  = .depend
 
 

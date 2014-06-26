@@ -1,14 +1,14 @@
 #include "thoraxabdo.h"
 
-Thoraxabdo::Thoraxabdo ( const unsigned char &iAdapter, const int &DeviceID,
-    const bool KFType, const float &KFW,
-    const int &LPF,
-    const Vector3d &refPos,
-    const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
-    const Vector4f &color,
-    const Vector3d &rSize, const float &HHeight, const Vector3d &ecc):
-BodyPart ( iAdapter, DeviceID, KFType, KFW, LPF, refPos, Aori, Cori, Lori, Oori, color, rSize*HHeight),
-    ecc(ecc) {}
+//Thoraxabdo::Thoraxabdo ( const unsigned char &iAdapter, const int &DeviceID,
+//    const bool KFType, const float &KFW,
+//    const int &LPF,
+//    const Vector3d &refPos,
+//    const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
+//    const Vector4f &color,
+//    const Vector3d &rSize, const float &HHeight, const Vector3d &ecc):
+//BodyPart ( iAdapter, DeviceID, KFType, KFW, LPF, refPos, Aori, Cori, Lori, Oori, color, rSize*HHeight),
+//    ecc(ecc) {}
 
 Thoraxabdo::Thoraxabdo ( const int &DeviceID,
     const bool KFType, const float &KFW,

@@ -31,7 +31,7 @@ using namespace Eigen;
  * \see
  * Head | Thoraxabdo | Upperarm | Lowerarm | Hand | Upperleg | Lowerleg | Foot
  */
-class BodyPart: public DeviceBox, public DeviceSPh
+class BodyPart: public DeviceSPh
 {
 private:
     /*!

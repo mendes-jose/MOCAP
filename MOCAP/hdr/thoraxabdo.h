@@ -84,13 +84,13 @@ public:
      * Specifies the eccentricity of the body part in each direction L, T, O.
      * 
      */
-    Thoraxabdo ( const unsigned char &iAdapter, const int &DeviceID,
-        const bool KFType, const float &KFW,
-        const int &LPF,
-        const Vector3d &refPos,
-        const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
-        const Vector4f &color,
-        const Vector3d &rSize, const float &HHeight, const Vector3d &ecc);
+//    Thoraxabdo ( const unsigned char &iAdapter, const int &DeviceID,
+//        const bool KFType, const float &KFW,
+//        const int &LPF,
+//        const Vector3d &refPos,
+//        const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
+//        const Vector4f &color,
+//        const Vector3d &rSize, const float &HHeight, const Vector3d &ecc);
     
     /*!
      * \brief

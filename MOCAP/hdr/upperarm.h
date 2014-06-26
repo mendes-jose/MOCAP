@@ -90,13 +90,13 @@ public:
      * Specifies on which side of the body part dependence this body part will be linked.
      * 
      */
-    Upperarm ( const unsigned char &iAdapter, const int &DeviceID,
-        const bool KFType, const float &KFW,
-        const int &LPF,
-        BodyPart *thorax,
-        const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
-        const Vector4f &color,
-        const Vector3d &rSize, const float &HHeight, const Vector3d &ecc, const char side);
+//    Upperarm ( const unsigned char &iAdapter, const int &DeviceID,
+//        const bool KFType, const float &KFW,
+//        const int &LPF,
+//        BodyPart *thorax,
+//        const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
+//        const Vector4f &color,
+//        const Vector3d &rSize, const float &HHeight, const Vector3d &ecc, const char side);
 
     /*!
      * \brief

@@ -7,17 +7,16 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
-#include <process.h>
 #include <omp.h>
 #include <vector>
-#include "rapidxml\rapidxml.hpp"
+#include <atomic>         // atomic_uint
+#include <thread>         // std::thread
+#include <cstdio>					// sprintf
+#include "rapidxml/rapidxml.hpp"
 #include "bodypart.h"
 #include "thoraxabdo.h"
 #include "head.h"

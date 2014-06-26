@@ -1,18 +1,18 @@
 #include "bodypart.h"
 
-BodyPart::BodyPart ( const unsigned char &iAdapter, const int &DeviceID,
-	const bool KFType, const float &KFW, const int &LPF,
-    const Vector3d &position, const Vector3d &Aori, const Vector3d &Cori,
-	const Vector3d &Lori, const Vector3d &Oori, const Vector4f &color,
-	const Vector3d dim):
-	DeviceBox(iAdapter, DeviceID), position(position), color(color),
-		KFT(KFType), W0(KFW), LPFSIZE(LPF), dim(dim)
-	{
-		this->LTOxyz=(Matrix<double,3,3>()<<
-			Lori,Oori.cross(Lori),Oori).finished();
-		this->ABCxyz=(Matrix<double,3,3>()<<
-			Aori,Cori.cross(Aori),Cori).finished();
-	}
+//BodyPart::BodyPart ( const unsigned char &iAdapter, const int &DeviceID,
+//	const bool KFType, const float &KFW, const int &LPF,
+//    const Vector3d &position, const Vector3d &Aori, const Vector3d &Cori,
+//	const Vector3d &Lori, const Vector3d &Oori, const Vector4f &color,
+//	const Vector3d dim):
+//	DeviceBox(iAdapter, DeviceID), position(position), color(color),
+//		KFT(KFType), W0(KFW), LPFSIZE(LPF), dim(dim)
+//	{
+//		this->LTOxyz=(Matrix<double,3,3>()<<
+//			Lori,Oori.cross(Lori),Oori).finished();
+//		this->ABCxyz=(Matrix<double,3,3>()<<
+//			Aori,Cori.cross(Aori),Cori).finished();
+//	}
 
 BodyPart::BodyPart ( const int &DeviceID, const bool KFType, const float &KFW,
 	const int &LPF, const Vector3d &position, const Vector3d &Aori,
@@ -28,8 +28,8 @@ BodyPart::BodyPart ( const int &DeviceID, const bool KFType, const float &KFW,
 	}
 
 void BodyPart::updateUKF ( void *param )
-    BodyPart *thisBP = static_cast<BodyPart*>(param);
 {
+    BodyPart *thisBP = static_cast<BodyPart*>(param);
 
     Matrix3d iNEMO;
     Matrix3d iNEMOPREV;
@@ -252,10 +252,10 @@ Matrix<double,ZD,1> BodyPart::measurementFunction ( const Matrix<double,4,1> &x 
 
 Matrix3d& BodyPart::readIMU ()
 {
-    if ( this->deviceID > int(Common::LARGESTBOXID) )
+//    if ( this->deviceID > int(Common::LARGESTBOXID) )
         return DeviceSPh::readIMU();
-    else
-        return DeviceBox::readIMU();
+//    else
+//        return DeviceBox::readIMU();
 }
 
 BodyPart::~BodyPart () {}

@@ -84,13 +84,13 @@ public:
      * \param ecc
      * Specifies the eccentricity of the body part in each direction L, T, O.
      */
-    Lowerleg ( const unsigned char &iAdapter, const int &DeviceID,
-        const bool KFType, const float &KFW,
-        const int &LPF,
-        BodyPart *uleg,
-        const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
-        const Vector4f &color,
-        const Vector3d &rSize, const float &HHeight, const Vector3d &ecc);
+//    Lowerleg ( const unsigned char &iAdapter, const int &DeviceID,
+//        const bool KFType, const float &KFW,
+//        const int &LPF,
+//        BodyPart *uleg,
+//        const Vector3d &Aori, const Vector3d &Cori, const Vector3d &Lori, const Vector3d &Oori,
+//        const Vector4f &color,
+//        const Vector3d &rSize, const float &HHeight, const Vector3d &ecc);
 
     /*!
      * \brief

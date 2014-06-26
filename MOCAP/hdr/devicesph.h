@@ -1,27 +1,26 @@
 #ifndef GENERICDEVICESPH_H
 #define GENERICDEVICESPH_H
 
-#pragma comment(lib, "ws2_32.lib")
 #define _USE_MATH_DEFINES
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include <arpa/inet.h>  /* for sockaddr_in and inet_ntoa() */
 #include "genericdevice.h"
+#include <cstdio> /* for sprintf */
 
 class DeviceSPh: virtual public GenericDevice
 {
 private:
-    SOCKET server_socket;
-    SOCKET client_socket;
+    int server_socket;
+    int client_socket;
     struct sockaddr_in clientAddr;
     struct sockaddr_in serverAddr;
     char buffer[128];
     char *pch;
     char sensorTypeAsCString[2];
-    int clientLen, ret;
+    unsigned int clientLen; 
+		int ret;
 
-    SOCKET mAccept (SOCKET s, struct sockaddr *addr, int *addrlen, int timeout);
+    int mAccept (int s, struct sockaddr *addr, unsigned int *addrlen, int timeout);
 
 public:
     virtual Eigen::Matrix3d& readIMU ();
