@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config>
+  
+  <Camera>
+    <Center X=".0" Y=".0" Z="5.0" />
+    <Eye pitch=".1" yaw="1.2" dist="11.0" />
+  </Camera>
+  
+  <Environment>
+    <!-- yes or no to toggle the two following parameters -->
+    <EstimateGravityAtRunTime>no</EstimateGravityAtRunTime>
+    <RelativizeMagFieldForEachDevice>yes</RelativizeMagFieldForEachDevice>
+    <NumberOfSamplesUsed s="30" />
+    <Gravity X=".0" Y=".0" Z="-1000.0" />
+    <MagField X="199.0" Y="113.0" Z="-447.0" />
+  </Environment>
+  
+  <BackGround>
+    <BackGroundColor r=".0" g=".0" b=".0" />
+    <!-- yes or no to toggle the two following parameters -->
+    <ShowXYZRef>no</ShowXYZRef>
+    <ShowGroundGrid>yes</ShowGroundGrid>
+    <GroundGridSqrSize s=".5" />
+    <GroundGridTotalSize s="20" />
+    <GroundGridColor r=".2" g=".2" b=".2" />
+  </BackGround>
+  
+  <DeviceComm>
+    <RecvBoxDataWaitingTime s="15" />
+    <RecvBoxDataTimeout s="4000" />
+    <LargestBoxID s="30" />
+    <RecvSmartPhoneDataWaitingTime s="5" />
+    <RecvSmartPhoneDataTimeout s="500" />
+    <TCPServerBasePort s="3700" />
+    <TCPServerListeningTimeout s="15000" />   
+  </DeviceComm>
+  
+  <GeneralFilterSettings>
+    <AccMagValidationGate epsa="55.0" epsm="30.0" epsdip=".18"/>
+    <HightCovValue s="10000000.0"/>
+  </GeneralFilterSettings>
+  
+  <Body>
+    <!-- RefPos is the pelvis position (chose its Z value equals to half of the height if you want the feet to touch the ground) -->
+    <RefPos X=".0" Y=".0" Z="5.0" />
+    <OfflineColor r="1.0" g=".0" b=".0" a=".6" />
+    <Height s="10.0" />
+    <!-- yes or no to toggle -->
+    <ShowLTORef>no</ShowLTORef>
+    <BodyParts>
+      <Thorax>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType> <!-- UKF or EKF -->
+        <UKFTune s=".2"/> <!-- real value in ]-1, +1[ -->
+        <LPFTune s="1"/> <!-- integer value in [0, +infinity[ where 0 means no filtering and +infinity a filtering of every frequency. 10 is already pretty hight -->
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="1.0"/>
+          <C X="1.0" Y=".0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".3125" L=".08" T=".12" /> <!-- relative to the height -->
+        <Eccentricity L=".65" T=".5" O=".7"/>
+      </Thorax>
+      <Head>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="2"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X="1.0" Y=".0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".15625" L=".09375" T=".078125" />
+        <Eccentricity L=".75" T=".5" O=".5"/>
+      </Head>
+      <UpperRightArm>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="2"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="-1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".1875" L="0.05625" T="0.05625" />
+        <Eccentricity L=".5" T=".5" O=".5"/>
+      </UpperRightArm>
+      <LowerRightArm>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="2"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="-1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".18" L="0.036" T="0.036" />
+        <Eccentricity L=".5" T=".5" O=".3"/>
+      </LowerRightArm>
+      <UpperLeftArm>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="2"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".1875" L="0.05625" T="0.05625" />
+        <Eccentricity L=".5" T=".5" O=".5"/>
+      </UpperLeftArm>
+      <LowerLeftArm>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="2"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".18" L="0.036" T="0.036" />
+        <Eccentricity L=".5" T=".5" O=".3"/>
+      </LowerLeftArm>
+      <RightHand>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="-1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".0625" L=".05" T=".01875" />
+        <Eccentricity L=".5" T="0.1" O=".5"/>
+      </RightHand>
+      <LeftHand>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".0625" L=".05" T=".01875" />
+        <Eccentricity L=".5" T="0.9" O=".5"/>
+      </LeftHand>
+      <UpperLeftLeg>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X="1.0" Y=".0" Z=".0"/>
+          <C X=".0" Y=".0" Z="1.0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".25" L=".075" T=".075" />
+        <Eccentricity L=".5" T=".5" O=".5"/>
+      </UpperLeftLeg>
+      <LowerLeftLeg>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".25" L=".05" T=".05" />
+        <Eccentricity L=".5" T=".5" O=".3"/>
+      </LowerLeftLeg>
+      <LeftFoot>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X="1.0" Y=".0" Z=".0"/>
+          <C X=".0" Y=".0" Z="1.0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X=".0" Y=".0" Z="1.0"/>
+          <O X="-1.0" Y=".0" Z=".0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".1" L=".01875" T=".05" />
+        <Eccentricity L="1.0" T=".5" O=".5"/>
+      </LeftFoot>
+      <UpperRightLeg>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="-1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".25" L=".075" T=".075" />
+        <Eccentricity L=".5" T=".5" O=".5"/>
+      </UpperRightLeg>
+      <LowerRightLeg>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X=".0" Y=".0" Z="-1.0"/>
+          <C X=".0" Y="-1.0" Z=".0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X="1.0" Y=".0" Z=".0"/>
+          <O X=".0" Y=".0" Z="1.0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".25" L=".05" T=".05" />
+        <Eccentricity L=".5" T=".5" O=".3"/>
+      </LowerRightLeg>
+      <RightFoot>
+        <DeviceID s="-1"/>
+        <KFType>UKF</KFType>
+        <UKFTune s=".2"/>
+        <LPFTune s="1"/>
+        <DeviceInitOri>
+          <A X="1.0" Y=".0" Z=".0"/>
+          <C X=".0" Y=".0" Z="1.0"/>
+        </DeviceInitOri>
+        <BPInitOri>
+          <L X=".0" Y=".0" Z="1.0"/>
+          <O X="-1.0" Y=".0" Z=".0"/>
+        </BPInitOri>
+        <Color r="1.0" g=".843" b=".0" />
+        <RelatifSize O=".1" L=".01875" T=".05" />
+        <Eccentricity L="1.0" T=".5" O=".5"/>
+      </RightFoot>
+    </BodyParts>
+  </Body>
+</Config>
