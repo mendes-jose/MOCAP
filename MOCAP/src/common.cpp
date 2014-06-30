@@ -323,3 +323,26 @@ void Common::glPyramid ( const Eigen::Vector3d &p, const Eigen::Vector3d &l, con
         glEnd();
     }
 }
+
+
+void Common::getWorkArea(int &height, int &width)
+{
+#if defined(_WIN32)
+  NONCLIENTMETRICS metrics;
+  metrics.cbSize = sizeof(metrics);
+  RECT rect;
+  SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &metrics, 0);
+  SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+	width = rect.right + 2*GetSystemMetrics(SM_CYFRAME);
+	height = rect.bottom - 2*GetSystemMetrics(SM_CXFRAME) - metrics.iMenuHeight;
+
+#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	height = scrn->height;
+	width  = scrn->width;
+
+//#if defined(__MACH__) && defined(__APPLE__)
+
+#endif
+}

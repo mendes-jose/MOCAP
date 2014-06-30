@@ -6,6 +6,8 @@
 #include <arpa/inet.h>  /* for sockaddr_in and inet_ntoa() */
 #include "genericdevice.h"
 #include <cstdio> /* for sprintf */
+#include <sys/types.h>
+#include <sys/socket.h>
 
 class DeviceSPh: virtual public GenericDevice
 {

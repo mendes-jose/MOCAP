@@ -6,10 +6,12 @@ DeviceSPh::DeviceSPh (): GenericDevice() {}
 
 DeviceSPh::DeviceSPh ( const int &sphoneID ):
     GenericDevice()
-{
+{ 
+		int optval = 1;
     this->deviceID = sphoneID;
     // Create a TCP socket
     server_socket = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP); // Create socket
+		setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int));
 
     if (server_socket == 0)
     {
@@ -22,14 +24,14 @@ DeviceSPh::DeviceSPh ( const int &sphoneID ):
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(Common::TCPSERVERBASEPORT+sphoneID);
 
-    if ( ::bind(server_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == 0 )
+    if ( ::bind(server_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) != 0 )
     {
         std::cerr << "WARNING: fail to bind to the device "<< int(sphoneID) << " socket" << std::endl;
         status = false;
         return;
     }
             
-    if ( listen(server_socket, 14) == 0 )
+    if ( listen(server_socket, 14) != 0 )
     {
         std::cerr << "WARNING: fail to start listen to device " << int(sphoneID) << " connection request" << std::endl;
         status = false;
@@ -39,7 +41,7 @@ DeviceSPh::DeviceSPh ( const int &sphoneID ):
     std::clog <<"Waiting for connection request from device " << int(this->deviceID) << std::endl;
 
     clientLen = sizeof(clientAddr);
-    if ( (client_socket = mAccept(server_socket, (struct sockaddr *)&clientAddr, &clientLen, Common::TCPSERVERLISTENINGTIMEOUT/1000)) == 0 )
+    if ( (client_socket = mAccept(server_socket, (struct sockaddr *)&clientAddr, &clientLen, Common::TCPSERVERLISTENINGTIMEOUT/1000)) == -1 )
     {
         std::cerr << "WARNING: fail to accept connection from device " << int(sphoneID) << " or listening timeout" << std::endl;
         status = false;
@@ -54,21 +56,21 @@ DeviceSPh::DeviceSPh ( const int &sphoneID ):
 
 Eigen::Matrix3d& DeviceSPh::readIMU ()
 {
-    sprintf(sensorTypeAsCString, "%d", ALL_THREE);
+    sprintf(sensorTypeAsCString, "%d\n", ALL_THREE);
 //    sensorTypeAsCString[1] = '\n';
 
     // SENDING DATA REQUEST
-    if ( sendto ( client_socket, sensorTypeAsCString, sizeof(sensorTypeAsCString), 0, (struct sockaddr *)&clientAddr, sizeof(clientLen) ) == 0 )
+    if ( sendto ( client_socket, sensorTypeAsCString, sizeof(sensorTypeAsCString), 0, (struct sockaddr *)&clientAddr, sizeof(clientLen) ) == -1 )
     {
         std::cerr << "WARNING: fail to send data request to device " << deviceID << std::endl;
         status = false;
         return imuData;
     }
-
+		ret = -1;
     // RECIEVING DATA
 		// wait a while before trying to get the requested data
-    nanosleep ( (struct timespec[]){{0, Common::RECVSMARTPHONEDATAWAITINGTIME*1000000}}, NULL);
-    ret = recvfrom ( client_socket, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &clientLen );
+//    nanosleep ( (struct timespec[]){{0, Common::RECVSMARTPHONEDATAWAITINGTIME*1000000}}, NULL);
+//    ret = recvfrom ( client_socket, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &clientLen );
     for ( int counter=0; ret < 1 && counter*Common::RECVSMARTPHONEDATAWAITINGTIME < Common::RECVSMARTPHONEDATATIMEOUT; counter++ )
     {
         nanosleep ( (struct timespec[]){{0, Common::RECVSMARTPHONEDATAWAITINGTIME*1000000}}, NULL);
@@ -115,12 +117,12 @@ int DeviceSPh::mAccept (int s, struct sockaddr *addr, unsigned int *addrlen, int
     tv.tv_sec = (long)timeout;
     tv.tv_usec = 0;
 
-    iResult = select(s, &rfds, (fd_set *) 0, (fd_set *) 0, &tv);
+    iResult = select(s+1, &rfds, (fd_set *) 0, (fd_set *) 0, &tv);
     if(iResult > 0)
     {
         return accept(s, addr, addrlen);
     }
-    return 0;
+    return -1;
 }
 
 

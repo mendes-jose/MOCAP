@@ -71,10 +71,10 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             " their predefined initial orientation and stay that way"<<
             " until you see the message (B).\nPress enter to proceed.\n";
         getchar();
+				std::cout << "[...]\n";
     }
     nDevicesOnline=0;
 
-    #pragma omp parallel for
     for ( int j=0; j < bodySize; j++ )
     {
         if ( thisBody->at(j)->is_online() )
@@ -83,7 +83,7 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             char id[4];
             sprintf ( id, "%d", int(thisBody->at(j)->devID()) );
             string line;
-
+std::cerr << "1\n";
             strcpy(filename, "calib/"); 
  	    			strcat(filename, id); strcat(filename, "AccCalib"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
@@ -99,9 +99,10 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             else
             {
                 std::cerr << "ERROR: Make sure you calibrated the box " << int(thisBody->at(j)->devID()) << endl;
-                system ( "pause" );
+                
                 exit ( EXIT_FAILURE );
             }
+std::cerr << "2\n";
             strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "AccVar"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
@@ -116,9 +117,10 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             else
             {
                 std::cerr << "ERROR: Make sure you calibrated the box " << int(thisBody->at(j)->devID()) << endl;
-                system ( "pause" );
+                
                 exit ( EXIT_FAILURE );
             }
+std::cerr << "3\n";
             strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "GyroCalib"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
@@ -133,9 +135,10 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             else
             {
                 std::cerr << "ERROR: Make sure you calibrated the box " << int(thisBody->at(j)->devID()) << endl;
-                system ( "pause" );
+                
                 exit ( EXIT_FAILURE );
             }
+std::cerr << "4\n";
             strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "GyroVar"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
@@ -150,9 +153,10 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             else
             {
                 std::cerr << "ERROR: Make sure you calibrated the box " << int(thisBody->at(j)->devID()) << endl;
-                system ( "pause" );
+                
                 exit ( EXIT_FAILURE );
             }
+std::cerr << "5\n";
             strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "MagCalib"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
@@ -167,9 +171,10 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             else
             {
                 std::cerr << "ERROR: Make sure you calibrated the box " << int(thisBody->at(j)->devID()) << endl;
-                system ( "pause" );
+                
                 exit ( EXIT_FAILURE );
             }
+std::cerr << "6\n";
             strcpy(filename, "calib/"); strcat(filename, id); strcat(filename, "MagVar"); strcat(filename, ".txt");
             calibrationFile[j].open(filename, ios::in);
             if ( calibrationFile[j].is_open() )
@@ -184,9 +189,10 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
             else
             {
                 std::cerr << "ERROR: Make sure you calibrated the box " << int(thisBody->at(j)->devID()) << endl;
-                system ( "pause" );
+                
                 exit ( EXIT_FAILURE );
             }
+std::cerr << "7\n";
             Matrix3d gK;
             Vector3d gb;
             Matrix3d mK;
@@ -198,6 +204,7 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                     Calib(7,j),Calib(8,j),Calib(5,j);
                 gb << Calib(0,j),Calib(1,j),Calib(2,j);
             }
+std::cerr << "8\n";
             if (cInst->ESTIMATEMAGFIELDATRUNTIME)
             {
                 mK << Calib(27,j),Calib(30,j),Calib(31,j),
@@ -205,19 +212,29 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                     Calib(31,j),Calib(32,j),Calib(29,j);
                 mb << Calib(24,j),Calib(25,j),Calib(26,j);
             }
+std::cerr << "9\n";
             if ( cInst->ESTIMATEMAGFIELDATRUNTIME && cInst->ESTIMATEGRAVITYATRUNTIME )
             {                                
+std::cerr << "10\n";
                 for (int i=0; i < cInst->GH_NSAMPLES; i++) // mag field
                 {
+std::cerr << "10.0\n";
                     imuData.block<3,3>(0,3*j) = thisBody->at(j)->readIMU();
+std::cerr << "10.1\n";
                     magfield.col(j) += mK * (imuData.col(MAGNETIC_FIELD + 3*j) - mb);
+std::cerr << "10.2\n";
                     gravity.col(j) += -1* gK * (imuData.col(ACCELERATION + 3*j) - gb);
+std::cerr << "10.3\n";
                 }
+std::cerr << "10.4\n";
                 magfield.col(j) = thisBody->at(j)->ABC2XYZ()*magfield.col(j)/cInst->GH_NSAMPLES;
+std::cerr << "10.5\n";
                 gravity.col(j) = thisBody->at(j)->ABC2XYZ()*gravity.col(j)/cInst->GH_NSAMPLES;
+std::cerr << "10.5\n";
             }
             else if ( cInst->ESTIMATEMAGFIELDATRUNTIME )
-            {                                
+            {
+std::cerr << "11\n";                          
                 for (int i=0; i < cInst->GH_NSAMPLES; i++) // mag field
                 {
 //                  imuData.block<3,3>(0,3*j) = (thisBody->at(j)->devID()>Common::LARGESTBOXID) ?
@@ -229,7 +246,8 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                 gravity.col(j) = cInst->G.cast<double>();
             }
             else
-            {                                
+            {
+std::cerr << "12\n";
                 for (int i=0; i < cInst->GH_NSAMPLES; i++) // mag field
                 {
 //                    imuData.block<3,3>(0,3*j) = (thisBody->at(j)->devID()>Common::LARGESTBOXID) ?
@@ -240,12 +258,16 @@ void Scene::mainLoop ( void* param ) //Call update for each member of body
                 gravity.col(j) = thisBody->at(j)->ABC2XYZ()*gravity.col(j)/cInst->GH_NSAMPLES;
                 magfield.col(j) = cInst->H.cast<double>();
             }
-            
+            std::cerr << "Final do loop, antes das ultimas 3 linhas\n";
             // Save on each device
             thisBody->at(j)->writeCalib( Calib.col(j) );
             thisBody->at(j)->h() = magfield.col(j); // mG
             ++nDevicesOnline;
         }
+				else
+				{
+					std::cerr << "Device " << int(thisBody->at(j)->devID()) << " is offline\n";
+				}
     }
     
     gravity.col(0) = gravity.rowwise().sum()/nDevicesOnline;
