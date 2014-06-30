@@ -2,6 +2,7 @@
 
 Scene::Scene()
 {
+
     body = new vector<BodyPart*>();
 
     string input_xml;
