@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <string name="app_name">IMU Access</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="serverip">Server IP address</string>
+    <string name="severport">Server Port</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="runinback">Run in Background</string>
+    <string name="toggle">Toggle</string>
+    <string name="IPEX">127.0.0.1</string>
+    <string name="portEX">2000</string>
+    <string name="acc">Accelerometer:</string>
+    <string name="gyro">Gyroscope:</string>
+    <string name="mag">Magnetometer:</string>
+    <string name="zeros">"    0.000,    0.000,    0.000"</string>
+    <string name="IPDefault">192.168.88.1</string>
+    <string name="portDefault">3731</string>
+    <color name="gray_not_focusable">#f999</color>
+    <color name="white">#ffff</color>
+    <color name="black">#f000</color>
+    
+</resources>
